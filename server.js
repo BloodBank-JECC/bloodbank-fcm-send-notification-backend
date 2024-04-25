@@ -20,7 +20,7 @@ const authenticateJWT = (req, res, next) => {
 
   if (authHeader) {
     // Extract token without 'Bearer ' prefix
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(" ")[1];
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
       if (err) {
@@ -37,12 +37,26 @@ const authenticateJWT = (req, res, next) => {
 };
 
 app.post("/sendNotification", authenticateJWT, (req, res) => {
-  const { title, body, targetToken } = req.body;
+  const {
+    title,
+    body,
+    senderId,
+    userId,
+    profileImage,
+    confirmation,
+    targetToken,
+  } = req.body;
 
   const message = {
     notification: {
       title,
       body,
+    },
+    data: {
+      senderId,
+      userId,
+      profileImage,
+      confirmation,
     },
     token: targetToken,
   };
