@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emailjs/nodejs": "^2.2.0",
     "express": "^4.19.2",
     "firebase-admin": "^12.1.0",
     "jsonwebtoken": "^9.0.2"

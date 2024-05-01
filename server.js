@@ -1,6 +1,7 @@
 const express = require("express");
 const admin = require("firebase-admin");
 const jwt = require("jsonwebtoken");
+const emailjs = require("@emailjs/nodejs");
 const serviceAccount = require("./bloodbank-cert.json");
 
 const app = express();
@@ -90,6 +91,35 @@ app.post("/genToken", async (req, res) => {
   } else {
     res.sendStatus(401);
   }
+});
+
+app.post("/sendContactForm", authenticateJWT, (req, res) => {
+  const { name, email, message } = req.body;
+
+  const formData = {
+    from_name: name,
+    from_email: email,
+    message: message,
+  };
+
+  emailjs
+    .send(
+      process.env.EMAIL_SERVICE_ID,
+      process.env.EMAIL_TEMPLATE_ID,
+      formData,
+      {
+        publicKey: process.env.EMAIL_PUBLIC_KEY,
+        privateKey: process.env.EMAIL_PRIVATE_KEY,
+      }
+    )
+    .then((result) => {
+      console.log("Successfully sent contact form:", result);
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error("Error sending contact form:", error);
+      res.status(500).send(error);
+    });
 });
 
 const PORT = process.env.PORT || 3000;
